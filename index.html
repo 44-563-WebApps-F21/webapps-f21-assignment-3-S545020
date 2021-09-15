@@ -69,5 +69,63 @@
             <td>$25</td>
         </tr>
     </table>
-
+    <hr>
+    <h1>Blockquote using HTML</h1>
+  <blockquote cite="https://iq.opengenus.org/binary-lifting-k-th-ancestor-lowest-common-ancestor/">
+    Lifting is a technique used to find the k-th ancestor of any node in a tree in O(logn). 
+    This also leads to a faster algorithm in finding the lowest common ancestor (LCA) between two nodes in a tree. 
+    It can also be used to compute functions such as minimum, maximum and sum between two nodes of a tree in logarithmic time. 
+    The technique requires preprocessing the tree in O(N log N) using dynamic programming.
+      The first step is to find out the 2j ancestor of every node where 0 <= j <= log(n).
+       This can be done by dynamic programming</blockquote>
+       <a href="https://iq.opengenus.org/binary-lifting-k-th-ancestor-lowest-common-ancestor/">Link to Source File</a>
+       <pre>int n, l;
+        vector<vector<int>> adj;
+        
+        int timer;
+        vector<int> tin, tout;
+        vector<vector<int>> up;
+        
+        void dfs(int v, int p)
+        {
+            tin[v] = ++timer;
+            up[v][0] = p;
+            for (int i = 1; i <= l; ++i)
+                up[v][i] = up[up[v][i-1]][i-1];
+        
+            for (int u : adj[v]) {
+                if (u != p)
+                    dfs(u, v);
+            }
+        
+            tout[v] = ++timer;
+        }
+        
+        bool is_ancestor(int u, int v)
+        {
+            return tin[u] <= tin[v] && tout[u] >= tout[v];
+        }
+        
+        int lca(int u, int v)
+        {
+            if (is_ancestor(u, v))
+                return u;
+            if (is_ancestor(v, u))
+                return v;
+            for (int i = l; i >= 0; --i) {
+                if (!is_ancestor(up[u][i], v))
+                    u = up[u][i];
+            }
+            return up[u][0];
+        }
+        
+        void preprocess(int root) {
+            tin.resize(n);
+            tout.resize(n);
+            timer = 0;
+            l = ceil(log2(n));
+            up.assign(n, vector<int>(l + 1));
+            dfs(root, root);
+        }
+    </pre>
 </html>
